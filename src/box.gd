@@ -31,7 +31,7 @@ func _physics_process(delta: float) -> void:
 	# Get the input direction and handle the movement/deceleration.
 	var speed = SPEED
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
-	var dash_dir = Input.get_vector("dash_left", "dash_right", "dash_forward", "dash_backward")
+	var dash_dir := Input.get_vector("dash_left", "dash_right", "dash_forward", "dash_backward")
 	if (not dash_dir.is_zero_approx()):
 		input_dir = dash_dir
 		speed = DASH_SPEED

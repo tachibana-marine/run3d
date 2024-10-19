@@ -2,9 +2,15 @@ extends GutTest
 
 const FPS = 60
 const DELTA = 1.0 / FPS
-const TIME_TO_REACH_APEX_DEFAULT = 0.20
-const TIME_TO_REACH_APEX_3_METERS = 0.24
-const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = 0.059
+const GRAVITY = 98
+const JUMP_VELOCITY_DEFAULT = sqrt(abs(2 * GRAVITY * 2))
+const JUMP_VELOCITY_3_METERS = sqrt(abs(2 * GRAVITY * 3))
+const TIME_TO_REACH_APEX_DEFAULT = JUMP_VELOCITY_DEFAULT / GRAVITY
+const TIME_TO_REACH_APEX_3_METERS = JUMP_VELOCITY_3_METERS / GRAVITY
+const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = (JUMP_VELOCITY_DEFAULT - sqrt(pow(JUMP_VELOCITY_DEFAULT, 2) - GRAVITY * 2)) / GRAVITY
+# const TIME_TO_REACH_APEX_DEFAULT = 0.20
+# const TIME_TO_REACH_APEX_3_METERS = 0.24
+# const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = 0.059
 
 var sender = InputSender.new(Input)
 var box_on_surface = load("res://test/scene/box_on_surface.tscn")
@@ -18,10 +24,6 @@ func before_each():
 	
 
 func after_each():
-	# Calculate and print values for parameters
-	# var v = sqrt(abs(2 * box.gravity * box.jump_height))
-	# gut.p(v / box.gravity)
-	# gut.p((v - sqrt(v * v - box.gravity * box.jump_height)) / box.gravity)
 	sender.release_all()
 	sender.clear()
 
@@ -29,7 +31,6 @@ func after_each():
 func test_jump_when_jump_action_is_pressed():
 	var y = box.position.y
 	assert_true(box.is_on_floor())
-	# sqrt(abs(2 * box.gravity * box.jump_height)) / box.gravity = 0.64
 	sender.action_down("jump").hold_for(TIME_TO_REACH_APEX_DEFAULT)
 	await (sender.idle)
 	await wait_until(func(): return not box.is_on_floor(), 1)
