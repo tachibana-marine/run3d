@@ -12,3 +12,6 @@ shape = SubResource("BoxShape3D_h5t63")
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 size = Vector3(10, 1, 10)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.841596, 0.540108, 0, -0.540108, 0.841596, 0, 2.88377, 4.07555)

@@ -1,7 +1,5 @@
 extends GutTest
 
-const FPS = 60
-const DELTA = 1.0 / FPS
 const GRAVITY = 98
 const JUMP_VELOCITY_DEFAULT = sqrt(abs(2 * GRAVITY * 2))
 const JUMP_VELOCITY_3_METERS = sqrt(abs(2 * GRAVITY * 3))
@@ -13,13 +11,14 @@ const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = (JUMP_VELOCITY_DEFAULT - sqrt(pow(JU
 # const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = 0.059
 
 var sender = InputSender.new(Input)
-var box_on_surface = load("res://test/scene/box_on_surface.tscn")
-var scene = null
+var floor_scene = load("res://test/scene/Floor.tscn")
+var box_scene = load("res://scene/box.tscn")
 var box = null
+var _floor = null
 
 func before_each():
-	scene = add_child_autofree(box_on_surface.instantiate())
-	box = scene.get_node("Box")
+	_floor = add_child_autofree(floor_scene.instantiate())
+	box = add_child_autofree(box_scene.instantiate())
 	await wait_until(func(): return box.is_on_floor(), 1)
 	
 
