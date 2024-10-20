@@ -1,8 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://b0qfnsfuagqvo"]
+[gd_scene load_steps=3 format=3 uid="uid://b0qfnsfuagqvo"]
 
 [ext_resource type="PackedScene" uid="uid://dq2x0ikjvdx38" path="res://scene/box.tscn" id="1_4vn6m"]
+[ext_resource type="PackedScene" uid="uid://lhbqxhj4q306" path="res://scene/obstacle.tscn" id="2_10avj"]
 
 [node name="Run3D" type="Node3D"]
 
 [node name="Box" parent="." instance=ExtResource("1_4vn6m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1618, 0)
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.928363, 0.371676, 0, -0.371676, 0.928363, 0, -0.0410967, 26.9982)
+
+[node name="Obstacle" parent="." instance=ExtResource("2_10avj")]
