@@ -18,4 +18,4 @@ func test_obstacle_moves_the_box():
     obstacle.color = Color(1, 0, 0)
     box.position.z = 1
     await wait_seconds(.5)
-    assert_almost_eq(box.position.z, 6, 0.25)
+    assert_almost_eq(box.position.z, 6.0, 0.25)
