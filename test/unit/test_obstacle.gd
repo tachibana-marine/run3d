@@ -12,14 +12,20 @@ var box_material = null
 
 func before_each():
     obstacle = add_child_autofree(obstacle_script.new())
+    add_child_autofree(CreateCamera.new().create())
+
+    # create collisions
     collision = CollisionShape3D.new()
     collision_shape = BoxShape3D.new()
     box = CSGBox3D.new()
     box_material = StandardMaterial3D.new()
     box.material = box_material
     collision.shape = collision_shape
+
+    # name the children
     collision.name = "CollisionShape"
     box.name = "Box"
+
     obstacle.add_child(collision)
     obstacle.add_child(box)
 

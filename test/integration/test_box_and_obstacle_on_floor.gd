@@ -1,14 +1,13 @@
 extends GutTest
 
-var floor_scene = load("res://test/scene/Floor.tscn")
 var box_scene = load("res://scene/box.tscn")
 var obstacle_scene = load("res://scene/obstacle.tscn")
 var box = null
 var obstacle = null
-var _floor = null
 
 func before_each():
-    _floor = add_child_autofree(floor_scene.instantiate())
+    add_child_autofree(CreateFloor.new().create())
+    add_child_autofree(CreateCamera.new().create())
     box = add_child_autofree(box_scene.instantiate())
     obstacle = add_child_autofree(obstacle_scene.instantiate())
     await wait_until(func(): return box.is_on_floor(), 1)

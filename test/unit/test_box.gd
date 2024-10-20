@@ -1,5 +1,6 @@
 extends GutTest
 
+
 const GRAVITY = 98
 const JUMP_VELOCITY_DEFAULT = sqrt(abs(2 * GRAVITY * 2))
 const JUMP_VELOCITY_3_METERS = sqrt(abs(2 * GRAVITY * 3))
@@ -11,14 +12,26 @@ const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = (JUMP_VELOCITY_DEFAULT - sqrt(pow(JU
 # const TIME_TO_REACH_HALF_THE_APEX_DEFAULT = 0.059
 
 var sender = InputSender.new(Input)
-var floor_scene = load("res://test/scene/Floor.tscn")
-var box_scene = load("res://scene/box.tscn")
+var box_script = load("res://src/box.gd")
 var box = null
-var _floor = null
 
 func before_each():
-	_floor = add_child_autofree(floor_scene.instantiate())
-	box = add_child_autofree(box_scene.instantiate())
+	add_child_autofree(CreateFloor.new().create())
+	add_child_autofree(CreateCamera.new().create())
+
+	box = add_child_autofree(box_script.new())
+
+	# add Collison to the box
+	box.add_child(CSGBox3D.new())
+	var collision = CollisionShape3D.new()
+	var box_shape = BoxShape3D.new()
+	collision.shape = box_shape
+	box.add_child(collision)
+
+	# add visible shape to the box
+	var csgbox = CSGBox3D.new()
+	box.add_child(csgbox)
+
 	await wait_until(func(): return box.is_on_floor(), 1)
 	
 
@@ -27,7 +40,7 @@ func after_each():
 	sender.clear()
 
 # expect 5% error in jump height
-func test_jump_when_jump_action_is_pressed():
+func test_unit_jump_when_jump_action_is_pressed():
 	var y = box.position.y
 	assert_true(box.is_on_floor())
 	sender.action_down("jump").hold_for(TIME_TO_REACH_APEX_DEFAULT)
