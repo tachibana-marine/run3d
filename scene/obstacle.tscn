@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://lhbqxhj4q306"]
+
+[ext_resource type="Script" path="res://src/obstacle.gd" id="1_nkxly"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_5p043"]
+
+[node name="Obstacle" type="AnimatableBody3D"]
+script = ExtResource("1_nkxly")
+
+[node name="CollisionShape" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_5p043")
+
+[node name="Box" type="CSGBox3D" parent="."]
