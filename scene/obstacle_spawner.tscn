@@ -4,3 +4,5 @@
 
 [node name="ObstacleSpawner" type="Node3D"]
 script = ExtResource("1_12yi6")
+
+[node name="Timer" type="Timer" parent="."]

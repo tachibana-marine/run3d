@@ -1,21 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://b0qfnsfuagqvo"]
+[gd_scene load_steps=5 format=3 uid="uid://b0qfnsfuagqvo"]
 
 [ext_resource type="PackedScene" uid="uid://dq2x0ikjvdx38" path="res://scene/box.tscn" id="1_4vn6m"]
-[ext_resource type="PackedScene" uid="uid://lhbqxhj4q306" path="res://scene/obstacle.tscn" id="2_10avj"]
+[ext_resource type="Script" path="res://src/run_3d.gd" id="1_682qc"]
+[ext_resource type="PackedScene" uid="uid://doecxym5w3jji" path="res://scene/obstacle_spawner.tscn" id="2_8qwn6"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_m7idm"]
 size = Vector3(10, 1, 10)
 
 [node name="Run3D" type="Node3D"]
+script = ExtResource("1_682qc")
 
 [node name="Box" parent="." instance=ExtResource("1_4vn6m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1618, 0)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.928363, 0.371676, 0, -0.371676, 0.928363, 0, 4.81378, 13.0506)
-
-[node name="Obstacle" parent="." instance=ExtResource("2_10avj")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4694, -12.9429)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12481, 0)
@@ -29,3 +28,6 @@ size = Vector3(10, 1, 10)
 
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
+
+[node name="ObstacleSpawner" parent="." instance=ExtResource("2_8qwn6")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.57303, -26.7894)
