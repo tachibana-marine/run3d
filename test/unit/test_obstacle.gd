@@ -1,8 +1,4 @@
 extends GutTest
-
-const FPS = 60
-const DELTA = 1.0 / FPS
-
 var obstacle_script = load("res://src/obstacle.gd")
 var obstacle = null
 var collision = null
@@ -35,16 +31,13 @@ func test_move_with_specified_speed():
     await wait_seconds(.5)
     assert_almost_eq(obstacle.position, Vector3(0, 0, 20), Vector3(0, 0, 0.01))
 
-func test_change_geometry_of_shape():
-    obstacle.width = 4
-    obstacle.height = 2
-    obstacle.depth = 3
-    assert_eq(collision_shape.size.x, 4.0)
-    assert_eq(collision_shape.size.y, 2.0)
-    assert_eq(collision_shape.size.z, 3.0)
-    assert_eq(box.size.x, 4.0)
-    assert_eq(box.size.y, 2.0)
-    assert_eq(box.size.z, 3.0)
+func test_has_size_property():
+    assert_property(obstacle, "size", Vector3(1, 1, 1), Vector3(2, 3, 4))
+
+func test_changing_size_also_changes_shape():
+    obstacle.size = Vector3(4, 2, 3)
+    assert_eq(collision.shape.size, Vector3(4, 2, 3))
+    assert_eq(box.size, Vector3(4, 2, 3))
 
 func test_obstacle_has_color_property():
     assert_property(obstacle, "color", Color(1, 1, 1), Color(.5, .5, 0))
