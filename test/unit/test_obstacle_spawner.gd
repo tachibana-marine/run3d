@@ -24,51 +24,65 @@ func test_spawn_obstacles():
     assert_eq(obstacles[1].size, Vector3(2, 3, 4))
     assert_eq(obstacles[1].speed, 20)
 
-func test_has_interval_property():
-    assert_property(obstacle_spawner, "max_interval", 1.0, 0.1)
-    assert_property(obstacle_spawner, "min_interval", 1.0, 0.1)
-
-
 func test_changing_interval_resets_timer():
     assert_eq(timer.wait_time, 1)
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .2
     assert_between(timer.wait_time, .1, .2)
 
+func test_removed_obstacle_is_removed_from_obstacles():
+    obstacle_spawner.spawn()
+    obstacle_spawner.obstacles[0].queue_free()
+    assert_eq(obstacle_spawner.obstacles.size(), 0)
+
 func test_assign_same_value_to_min_and_max_to_get_fixed_interval():
     # assign the same value to both min and max for constant interval
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
     assert_eq(timer.wait_time, .1)
-    assert_eq(timer.time_left, .1)
 
-    obstacle_spawner.min_interval = .4
     obstacle_spawner.max_interval = .4
+    obstacle_spawner.min_interval = .4
     assert_eq(timer.wait_time, .4)
-    assert_eq(timer.time_left, .4)
 
-    assert_eq(obstacle_spawner.obstacles.size(), 0)
+func test_interval_should_be_greater_than_zero():
+    obstacle_spawner.min_interval = 0
+    assert_ne(obstacle_spawner.min_interval, 0)
+    obstacle_spawner.max_interval = 0
+    assert_ne(obstacle_spawner.max_interval, 0)
+
+func test_interval_max_should_be_greater_than_min():
+    # default value is 1
+    obstacle_spawner.min_interval = 2
+    assert_ne(obstacle_spawner.min_interval, 2)
+
+    obstacle_spawner.max_interval = .5
+    assert_ne(obstacle_spawner.max_interval, .5)
 
 func test_stop_spawning_obstacles():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
-    obstacle_spawner.stop()
     await wait_seconds(.2)
     assert_eq(obstacle_spawner.obstacles.size(), 0)
 
     obstacle_spawner.start()
     await wait_seconds(.2)
-    # assert_eq(obstacle_spawner.obstacles.size(), 2)
+    var size = obstacle_spawner.obstacles.size()
+    assert_gte(size, 1)
 
+    obstacle_spawner.stop()
+    await wait_seconds(.2)
+    assert_eq(obstacle_spawner.obstacles.size(), size)
 
 func test_obstacle_x_axis_randomly_changes():
     # assign the same value to both min and max for constant interval
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
-    await wait_seconds(.5)
+    obstacle_spawner.start()
+    # Timer is not that accurate so it needs some margin
+    await wait_seconds(.55)
     var obstacles = obstacle_spawner.obstacles
-    # assert_eq(obstacles.size(), 5)
-    # why does it fail
+    assert_eq(obstacles.size(), 5)
     
     var previous = 0.0
     var duplicate_num = 0
@@ -82,11 +96,12 @@ func test_obstacle_x_axis_randomly_changes():
 func test_obstacle_interval_randomly_changes_between_min_and_max():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .25
-    
+    obstacle_spawner.start()
+
     var intervals = []
     for i in range(1 / .25): # 1/.25 == 4
         await wait_seconds(.25)
-        intervals.append(obstacle_spawner.next_interval)
+        intervals.append(timer.wait_time)
     var obstacles = obstacle_spawner.obstacles
     assert_gte(obstacles.size(), 4)
     assert_lte(obstacles.size(), 10)
