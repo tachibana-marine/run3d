@@ -3,26 +3,30 @@ extends GutTest
 var obstacle_spawner_script = load("res://src/obstacle_spawner.gd")
 var obstacle_spawner = null
 var timer = null
+var obstacles = null
 func before_each():
     obstacle_spawner = autofree(obstacle_spawner_script.new())
     timer = Timer.new()
     timer.name = "Timer"
+    obstacles = Node3D.new()
+    obstacles.name = "Obstacles"
     obstacle_spawner.add_child(timer)
+    obstacle_spawner.add_child(obstacles)
     add_child(obstacle_spawner)
 
 func test_spawn_obstacles():
     obstacle_spawner.spawn()
     obstacle_spawner.spawn(20, Vector3(4, 3, 2), Vector3(2, 3, 4))
-    var obstacles = obstacle_spawner.obstacles
+    var obstacle_list = obstacles.get_children()
     # default parameters
-    assert_eq(obstacles.size(), 2)
-    assert_eq(obstacles[0].position, Vector3(0, 0, 0))
-    assert_eq(obstacles[0].size, Vector3(1, 1, 1))
-    assert_eq(obstacles[0].speed, 10)
+    assert_eq(obstacle_list.size(), 2)
+    assert_eq(obstacle_list[0].position, Vector3(0, 0, 0))
+    assert_eq(obstacle_list[0].size, Vector3(1, 1, 1))
+    assert_eq(obstacle_list[0].speed, 10)
     # custom parameters
-    assert_eq(obstacles[1].position, Vector3(4, 3, 2))
-    assert_eq(obstacles[1].size, Vector3(2, 3, 4))
-    assert_eq(obstacles[1].speed, 20)
+    assert_eq(obstacle_list[1].position, Vector3(4, 3, 2))
+    assert_eq(obstacle_list[1].size, Vector3(2, 3, 4))
+    assert_eq(obstacle_list[1].speed, 20)
 
 func test_changing_interval_resets_timer():
     assert_eq(timer.wait_time, 1)
@@ -32,11 +36,13 @@ func test_changing_interval_resets_timer():
 
 func test_removed_obstacle_is_removed_from_obstacles():
     obstacle_spawner.spawn()
-    obstacle_spawner.obstacles[0].queue_free()
-    assert_eq(obstacle_spawner.obstacles.size(), 0)
+    assert_eq(obstacles.get_children().size(), 1)
+    obstacles.get_children()[0].queue_free()
+    # wait for the queue_free to do its job
+    await wait_frames(1)
+    assert_eq(obstacles.get_children().size(), 0)
 
 func test_assign_same_value_to_min_and_max_to_get_fixed_interval():
-    # assign the same value to both min and max for constant interval
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
     assert_eq(timer.wait_time, .1)
@@ -75,22 +81,21 @@ func test_stop_spawning_obstacles():
     assert_eq(obstacle_spawner.obstacles.size(), size)
 
 func test_obstacle_x_axis_randomly_changes():
-    # assign the same value to both min and max for constant interval
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
     obstacle_spawner.start()
     # Timer is not that accurate so it needs some margin
     await wait_seconds(.55)
-    var obstacles = obstacle_spawner.obstacles
-    assert_eq(obstacles.size(), 5)
+    var obstacle_list = obstacles.get_children()
+    assert_eq(obstacle_list.size(), 5)
     
     var previous = 0.0
     var duplicate_num = 0
-    for obstacle in obstacles:
+    for obstacle in obstacle_list:
         if (previous == obstacle.position.x):
             duplicate_num += 1
         previous = obstacle.position.x
-    # [0,1,0,1,0] would pass this assert, but I don't care that much
+    # [0,1,0,1,0] would pass this assert, but I don't care
     assert_eq(duplicate_num, 0)
 
 func test_obstacle_interval_randomly_changes_between_min_and_max():
@@ -102,9 +107,9 @@ func test_obstacle_interval_randomly_changes_between_min_and_max():
     for i in range(1 / .25): # 1/.25 == 4
         await wait_seconds(.25)
         intervals.append(timer.wait_time)
-    var obstacles = obstacle_spawner.obstacles
-    assert_gte(obstacles.size(), 4)
-    assert_lte(obstacles.size(), 10)
+    var obstacle_list = obstacles.get_children()
+    assert_gte(obstacle_list.size(), 4)
+    assert_lte(obstacle_list.size(), 10)
     
     var previous = 0.0
     var duplicate_num = 0

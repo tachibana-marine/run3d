@@ -32,7 +32,8 @@ func spawn(speed = 10, _position = Vector3(0, 0, 0), size = Vector3(1, 1, 1)):
 	obstacle.position = _position
 	obstacle.size = size
 	obstacles.append(obstacle)
-	add_child(obstacle)
+	# add_child(obstacle)
+	$Obstacles.add_child(obstacle)
 
 func start():
 	_change_interval()
