@@ -5,14 +5,10 @@ var obstacle_spawner = null
 var timer = null
 var obstacles = null
 func before_each():
-    obstacle_spawner = autofree(obstacle_spawner_script.new())
-    timer = Timer.new()
-    timer.name = "Timer"
-    obstacles = Node3D.new()
-    obstacles.name = "Obstacles"
-    obstacle_spawner.add_child(timer)
-    obstacle_spawner.add_child(obstacles)
-    add_child(obstacle_spawner)
+    add_child_autofree(CreateCamera.new().create())
+    obstacle_spawner = add_child_autofree(obstacle_spawner_script.new())
+    timer = obstacle_spawner.get_node("Timer")
+    obstacles = obstacle_spawner.get_node("Obstacles")
 
 func test_spawn_obstacles():
     obstacle_spawner.spawn()
@@ -69,16 +65,16 @@ func test_stop_spawning_obstacles():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
     await wait_seconds(.2)
-    assert_eq(obstacle_spawner.obstacles.size(), 0)
+    assert_eq(obstacles.get_children().size(), 0)
 
     obstacle_spawner.start()
     await wait_seconds(.2)
-    var size = obstacle_spawner.obstacles.size()
+    var size = obstacles.get_children().size()
     assert_gte(size, 1)
 
     obstacle_spawner.stop()
     await wait_seconds(.2)
-    assert_eq(obstacle_spawner.obstacles.size(), size)
+    assert_eq(obstacles.get_children().size(), size)
 
 func test_obstacle_x_axis_randomly_changes():
     obstacle_spawner.min_interval = .1
