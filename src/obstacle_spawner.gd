@@ -50,7 +50,10 @@ func stop():
 	$Timer.stop()
 
 func _on_timer_timeout():
-	spawn(10, Vector3(randf_range(-2, 2), 0, 0), Vector3(randf_range(0.5, 1.5), randf_range(0.5, 1.5), 1))
+	var width = randf_range(min_size.x, max_size.x)
+	var height = randf_range(min_size.y, max_size.y)
+	var depth = randf_range(min_size.z, max_size.z)
+	spawn(10, Vector3(randf_range(-2, 2), 0, 0), Vector3(width, height, depth))
 	start()
 
 func _change_interval():

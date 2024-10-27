@@ -101,6 +101,8 @@ func test_stop_spawning_obstacles():
 func test_obstacle_x_axis_and_size_randomly_changes():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
+    obstacle_spawner.max_size = Vector3(4, 5, 6)
+    obstacle_spawner.min_size = Vector3(1, 2, 3)
     obstacle_spawner.start()
     # Timer is not that accurate so it needs some margin
     await wait_seconds(.55)
