@@ -1,8 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://b0qfnsfuagqvo"]
+[gd_scene load_steps=5 format=3 uid="uid://b0qfnsfuagqvo"]
 
 [ext_resource type="PackedScene" uid="uid://dq2x0ikjvdx38" path="res://scene/box.tscn" id="1_4vn6m"]
 [ext_resource type="Script" path="res://src/run_3d.gd" id="1_682qc"]
-[ext_resource type="Script" path="res://src/obstacle.gd" id="3_7fu7j"]
 [ext_resource type="Script" path="res://src/obstacle_spawner.gd" id="3_ic4c5"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_m7idm"]
@@ -29,12 +28,6 @@ size = Vector3(10, 1, 10)
 
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
-
-[node name="Obstacle" type="AnimatableBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.82952, -33.9202)
-script = ExtResource("3_7fu7j")
-size = Vector3(10, 2, 1)
-color = Color(0.5907, 0.473771, 0.818491, 1)
 
 [node name="ObstacleSpawner" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.37592, -10.1827)

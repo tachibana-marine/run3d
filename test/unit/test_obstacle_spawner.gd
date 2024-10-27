@@ -38,6 +38,28 @@ func test_removed_obstacle_is_removed_from_obstacles():
     await wait_frames(1)
     assert_eq(obstacles.get_children().size(), 0)
 
+func test_has_max_and_min_size_property():
+    # you can't test the range of the specified size.
+    # at least I can't come up with one using GUT.
+    assert_property(obstacle_spawner, "max_size", Vector3(1, 1, 1), Vector3(2, 3, 4))
+    assert_property(obstacle_spawner, "min_size", Vector3(1, 1, 1), Vector3(2, 3, 4))
+
+func test_min_and_max_size_is_greater_than_zero():
+    obstacle_spawner.max_size = Vector3(0, 0, 0)
+    assert_eq(obstacle_spawner.max_size, Vector3(1, 1, 1))
+    obstacle_spawner.min_size = Vector3(0, 0, 0)
+    assert_eq(obstacle_spawner.min_size, Vector3(1, 1, 1))
+
+func test_min_size_is_greater_than_max_size():
+    obstacle_spawner.max_size = Vector3(2, 3, 4)
+    assert_eq(obstacle_spawner.max_size, Vector3(2, 3, 4))
+    obstacle_spawner.min_size = Vector3(3, 4, 5)
+    assert_eq(obstacle_spawner.min_size, Vector3(1, 1, 1))
+
+    obstacle_spawner.max_size = Vector3(0.5, 2, 2)
+    assert_eq(obstacle_spawner.max_size, Vector3(2, 3, 4))
+
+
 func test_assign_same_value_to_min_and_max_to_get_fixed_interval():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
@@ -76,7 +98,7 @@ func test_stop_spawning_obstacles():
     await wait_seconds(.2)
     assert_eq(obstacles.get_children().size(), size)
 
-func test_obstacle_x_axis_randomly_changes():
+func test_obstacle_x_axis_and_size_randomly_changes():
     obstacle_spawner.min_interval = .1
     obstacle_spawner.max_interval = .1
     obstacle_spawner.start()
@@ -85,12 +107,16 @@ func test_obstacle_x_axis_randomly_changes():
     var obstacle_list = obstacles.get_children()
     assert_eq(obstacle_list.size(), 5)
     
-    var previous = 0.0
+    var previous_x = 0.0
+    var previous_size = Vector3.ZERO
     var duplicate_num = 0
     for obstacle in obstacle_list:
-        if (previous == obstacle.position.x):
+        if (previous_x == obstacle.position.x):
             duplicate_num += 1
-        previous = obstacle.position.x
+        if (previous_size == obstacle.size):
+            duplicate_num += 1
+        previous_x = obstacle.position.x
+        previous_size = obstacle.size
     # [0,1,0,1,0] would pass this assert, but I don't care
     assert_eq(duplicate_num, 0)
 
