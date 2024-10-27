@@ -1,15 +1,38 @@
-[gd_scene load_steps=5 format=3 uid="uid://b0qfnsfuagqvo"]
+[gd_scene load_steps=7 format=3 uid="uid://b0qfnsfuagqvo"]
 
 [ext_resource type="PackedScene" uid="uid://dq2x0ikjvdx38" path="res://scene/box.tscn" id="1_4vn6m"]
 [ext_resource type="Script" path="res://src/run_3d.gd" id="1_682qc"]
 [ext_resource type="Script" path="res://src/obstacle_spawner.gd" id="3_ic4c5"]
 [ext_resource type="Script" path="res://src/collision_box3d.gd" id="4_0vpw6"]
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_la5u0"]
+albedo_color = Color(1, 0.486275, 0, 1)
+emission_enabled = true
+emission = Color(1, 0.270588, 0.156863, 1)
+emission_energy_multiplier = 10.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_sexob"]
+material = SubResource("StandardMaterial3D_la5u0")
+size = Vector3(0.1, 0.1, 0.1)
+
 [node name="Run3D" type="Node3D"]
 script = ExtResource("1_682qc")
 
-[node name="Box" parent="." instance=ExtResource("1_4vn6m")]
+[node name="Box" parent="." node_paths=PackedStringArray("particle") instance=ExtResource("1_4vn6m")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1618, 0)
+particle = NodePath("CPUParticles3D")
+
+[node name="CPUParticles3D" type="CPUParticles3D" parent="Box"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.417162, 0.765539)
+amount = 16
+lifetime = 0.5
+mesh = SubResource("BoxMesh_sexob")
+emission_shape = 3
+emission_box_extents = Vector3(0.5, 0.1, 0.1)
+direction = Vector3(0, 0, 1)
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 5.0
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.64679, -0.461109, 0.607488, 0, 0.79653, 0.604599, -0.762668, -0.391049, 0.515187, 9.22624, 8.38442, 6.00633)

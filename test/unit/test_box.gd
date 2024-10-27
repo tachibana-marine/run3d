@@ -119,7 +119,6 @@ func test_diagonal_move_velocity_is_normalized(params = use_parameters([["move_r
 	await wait_frames(1)
 	print(Vector2(box.velocity.x, box.velocity.z))
 	assert_almost_eq(Vector2(box.velocity.x, box.velocity.z).length(), Box.MOVE_SPEED, 0.001)
-	await (sender.idle)
 
 func test_diagonal_dash_velocity_is_normalized(params = use_parameters([["dash_right", "dash_forward"], ["dash_left", "dash_forward"], \
 	 ["dash_right", "dash_backward"], ["dash_left", "dash_backward"]])):
@@ -127,8 +126,21 @@ func test_diagonal_dash_velocity_is_normalized(params = use_parameters([["dash_r
 	await wait_frames(1)
 	print(Vector2(box.velocity.x, box.velocity.z))
 	assert_almost_eq(Vector2(box.velocity.x, box.velocity.z).length(), Box.DASH_SPEED, 0.001)
-	await (sender.idle)
 
+func test_particle_is_hidden_while_jumping():
+	var particle = add_child_autofree(CPUParticles3D.new())
+	box.particle = particle
+	particle.visible = true
+	sender.action_down("jump").hold_for(.1)
+	await (sender.idle)
+	assert_false(box.is_on_floor())
+	assert_false(particle.is_emitting())
+
+	await wait_until(func(): return box.is_on_floor(), 1)
+	assert_true(box.is_on_floor())
+	# you have to wait 1 frame for the visibility change
+	await wait_frames(1)
+	assert_true(particle.is_emitting())
 
 func test_move_with_intertia():
 	assert_true(box.is_on_floor())
