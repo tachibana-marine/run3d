@@ -3,9 +3,7 @@
 [ext_resource type="PackedScene" uid="uid://dq2x0ikjvdx38" path="res://scene/box.tscn" id="1_4vn6m"]
 [ext_resource type="Script" path="res://src/run_3d.gd" id="1_682qc"]
 [ext_resource type="Script" path="res://src/obstacle_spawner.gd" id="3_ic4c5"]
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_m7idm"]
-size = Vector3(10, 1, 10)
+[ext_resource type="Script" path="res://src/collision_box3d.gd" id="4_0vpw6"]
 
 [node name="Run3D" type="Node3D"]
 script = ExtResource("1_682qc")
@@ -16,19 +14,14 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.1618, 0)
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.64679, -0.461109, 0.607488, 0, 0.79653, 0.604599, -0.762668, -0.391049, 0.515187, 9.22624, 8.38442, 6.00633)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.12481, 0)
-metadata/_edit_group_ = true
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
-shape = SubResource("BoxShape3D_m7idm")
-
-[node name="CSGBox3D" type="CSGBox3D" parent="StaticBody3D"]
-size = Vector3(10, 1, 10)
-
 [node name="light" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 10, 0)
 
 [node name="ObstacleSpawner" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.37592, -10.1827)
 script = ExtResource("3_ic4c5")
+
+[node name="CollisionBox3D" type="AnimatableBody3D" parent="."]
+script = ExtResource("4_0vpw6")
+size = Vector3(20, 1, 100)
+color = Color(0.446777, 0.446777, 0.446777, 1)

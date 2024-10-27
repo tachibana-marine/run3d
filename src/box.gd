@@ -1,7 +1,7 @@
 extends CharacterBody3D
 class_name Box
 
-const SPEED = 5.0
+const MOVE_SPEED = 5.0
 const DASH_SPEED = 10.0
 const JUMP_VELOCITY = 4.5
 const FLICTION = 0.1
@@ -29,7 +29,7 @@ func _physics_process(delta: float) -> void:
 	
 		
 	# Get the input direction and handle the movement/deceleration.
-	var speed = SPEED
+	var speed = MOVE_SPEED
 	var input_dir := Input.get_vector("move_left", "move_right", "move_forward", "move_backward")
 	var dash_dir := Input.get_vector("dash_left", "dash_right", "dash_forward", "dash_backward")
 	if (not dash_dir.is_zero_approx()):

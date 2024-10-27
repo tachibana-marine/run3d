@@ -74,44 +74,61 @@ func test_move():
 	assert_true(box.is_on_floor())
 	sender.action_down("move_forward").hold_for(.1)
 	await (sender.idle)
-	assert_lt(box.velocity.z, 0.0)
+	assert_eq(box.velocity.z, -Box.MOVE_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("move_backward").hold_for(.1)
 	await (sender.idle)
-	assert_gt(box.velocity.z, 0.0)
+	assert_eq(box.velocity.z, Box.MOVE_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("move_left").hold_for(.1)
 	await (sender.idle)
-	assert_lt(box.velocity.x, 0.0)
+	assert_eq(box.velocity.x, -Box.MOVE_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("move_right").hold_for(.1)
 	await (sender.idle)
-	assert_gt(box.velocity.x, 0.0)
+	assert_eq(box.velocity.x, Box.MOVE_SPEED)
 
 func test_dash():
 	# I don't care how fast the dash is.
 	assert_true(box.is_on_floor())
 	sender.action_down("dash_forward").hold_for(.1)
 	await (sender.idle)
-	assert_lt(box.velocity.z, 0.0)
+	assert_eq(box.velocity.z, -Box.DASH_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("dash_backward").hold_for(.1)
 	await (sender.idle)
-	assert_gt(box.velocity.z, 0.0)
+	assert_eq(box.velocity.z, Box.DASH_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("dash_left").hold_for(.1)
 	await (sender.idle)
-	assert_lt(box.velocity.x, 0.0)
+	assert_eq(box.velocity.x, -Box.DASH_SPEED)
 
 	box.position = Vector3.ZERO
 	sender.action_down("dash_right").hold_for(.1)
 	await (sender.idle)
-	assert_gt(box.velocity.x, 0.0)
+	assert_eq(box.velocity.x, Box.DASH_SPEED)
+
+func test_diagonal_move_velocity_is_normalized(params = use_parameters([["move_right", "move_forward"], ["move_left", "move_forward"], \
+	 ["move_right", "move_backward"], ["move_left", "move_backward"]])):
+	sender.action_down(params[0]).action_down(params[1]).hold_for(.1)
+	await wait_frames(1)
+	print(Vector2(box.velocity.x, box.velocity.z))
+	assert_almost_eq(Vector2(box.velocity.x, box.velocity.z).length(), Box.MOVE_SPEED, 0.001)
+	await (sender.idle)
+
+func test_diagonal_dash_velocity_is_normalized(params = use_parameters([["dash_right", "dash_forward"], ["dash_left", "dash_forward"], \
+	 ["dash_right", "dash_backward"], ["dash_left", "dash_backward"]])):
+	sender.action_down(params[0]).action_down(params[1]).hold_for(.1)
+	await wait_frames(1)
+	print(Vector2(box.velocity.x, box.velocity.z))
+	assert_almost_eq(Vector2(box.velocity.x, box.velocity.z).length(), Box.DASH_SPEED, 0.001)
+	await (sender.idle)
+
 
 func test_move_with_intertia():
 	assert_true(box.is_on_floor())
